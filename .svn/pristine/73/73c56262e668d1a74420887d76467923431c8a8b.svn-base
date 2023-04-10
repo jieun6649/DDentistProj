@@ -1,0 +1,11 @@
+package com.web.ddentist.hospital.media.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.web.ddentist.vo.ReservationVO;
+
+public interface MediaService {
+
+}

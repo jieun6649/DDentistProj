@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.web.ddentist.mapper.ChartMapper">
+
+	<select id="listRegist" resultType="regVO">
+		SELECT A.REG_NUM, A.RESV_NUM, A.PT_NUM, A.EMP_NUM, A.REG_CC, A.REG_STATUS, A.REG_DT,
+		       B.PT_NM, C.EMP_NM, (SELECT CHAIR_NM
+		       						 FROM CHAIR
+		       						WHERE CHAIR_SN = A.CHAIR_NUM) CHAIR_NM
+		  FROM REGIST A, PATIENT B, EMPLOYEE C
+		 WHERE A.REG_STATUS = 'ACCEPT'
+  		   AND TO_CHAR(A.REG_DT, 'YYYYMMDD') = TO_CHAR(SYSDATE, 'YYYYMMDD')
+		   AND A.PT_NUM = B.PT_NUM
+		   AND A.EMP_NUM = C.EMP_NUM
+		 ORDER BY A.REG_NUM
+	</select>
+	
+	<select id="listResv" resultType="reservationVO">
+		SELECT RESV_NUM, PT_NUM, EMP_NUM, PT_NM, PT_PHONE, RESV_CC, RESV_SDT, RESV_EDT, RESV_ET, RESV_STATUS
+		  FROM RESERVATION
+		 WHERE TO_CHAR(RESV_SDT, 'YYYYMMDD') = TO_CHAR(SYSDATE, 'YYYYMMDD')
+		   AND RESV_STATUS = 'IN_RESV'
+	</select>
+	
+</mapper>

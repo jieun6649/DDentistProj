@@ -1,0 +1,110 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<style>
+.rcvmtMenu a{
+	font-family: 'Noto Sans KR', sans-serif;
+	color: white;
+}
+</style>
+<div class="content-wrapper" style="background-color: #657D96;">
+	<!-- main 검색창을 포함한 navbar 시작-->
+	<nav class="navbar navbar-expand navbar-white navbar-light" style="background-color: #404b57;">
+		<div class="input-group" style="width: 400px;">
+			<input type="text" class="form-control" id="ptSearch" placeholder="환자 검색">
+			<div class="input-group-append">
+				<button type="button" id="ptSearchBtn" class="btn btn-outline-secondary" onclick="searchPtOnCrmList();">검색</button>
+			</div>
+		</div>
+		<img src="/resources/images/layout/memo_icon.png" alt="메모" id="memo" class="brand-image elevation-1" style="margin-left: 15px;">
+		<ul class="navbar-nav ml-auto"></ul>
+		<div class="rcvmtMenu d-flex justify-content-around" style="min-width: 280px;">
+			<a href="#" onclick="">수납</a>
+			<a href="#" onclick="">수납 내역</a>
+			<a href="#" onclick="">결제 내역</a>
+		</div>
+	</nav>
+	
+	<section class="content" style="margin-top: 1%; height: 900px;">
+	
+		<!-- 수납대기/완료 목록 시작 -->
+		<div class="row mb-3" style="height: 30%;">
+			<!-- 수납대기 시작 -->
+			<div class="col-md-6">
+				<div class="card card-info" style="height: 100%;">
+					<div class="card-header" style="background-color: #404b57;">
+						<div class="card-title">
+							<h5 class="m-0">수납대기</h5>
+						</div>
+					</div>
+					<div class="card-body p-0">
+						<table class="table table-hover text-center">
+							<thead class="sticky-top bg-white">
+								<tr>
+									<th>차트번호</th>
+									<th>이름</th>
+									<th>진료의사</th>
+									<th>총진료비</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- 수납대기 끝  -->
+			<!-- 수납완료 시작  -->
+			<div class="col-md-6">
+				<div class="card card-info" style="height: 100%;">
+					<div class="card-header" style="background-color: #404b57;">
+						<div class="card-title">
+							<h5 class="m-0">수납완료</h5>
+						</div>
+					</div>
+					<div class="card-body p-0">
+						<table class="table table-hover text-center">
+							<thead class="sticky-top bg-white">
+								<tr>
+									<th>차트번호</th>
+									<th>이름</th>
+									<th>결제금액</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- 수납완료 끝  -->
+		</div>
+		<!-- 수납대기/완료 목록 끝 -->
+		
+		<!-- 환자정보 시작 -->
+		<div class="card card-info" style="height: 30%;">
+			<div class="card-header" style="background-color: #404b57;">
+				<div class="card-title">
+					<h5 class="m-0">환자정보</h5>
+				</div>
+			</div>
+			<div class="card-body">
+			</div>
+		</div>
+		<!-- 환자정보 끝 -->
+		
+		<!-- 결제정보 시작 -->
+		<div class="card card-info" style="height: 30%;">
+			<div class="card-header" style="background-color: #404b57;">
+				<div class="card-title">
+					<h5 class="m-0">결제정보</h5>
+				</div>
+			</div>
+			<div class="card-body">
+			</div>
+		</div>
+		<!-- 결제정보 끝 -->
+		
+	</section>
+</div>

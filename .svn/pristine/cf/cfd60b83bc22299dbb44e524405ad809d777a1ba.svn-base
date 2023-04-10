@@ -1,0 +1,88 @@
+package com.web.ddentist.vo;
+
+import java.util.Date;
+
+public class RegistVO {
+	
+	private String regNum;
+	private String resvNum;
+	private String ptNum;
+	private String empNum;
+	private String regCc;
+	private int chairNum;
+	private String regStatus;
+	private Date regDt;
+	
+	private String ptNm;
+	private String empNm;
+	
+	
+	public String getRegNum() {
+		return regNum;
+	}
+	public void setRegNum(String regNum) {
+		this.regNum = regNum;
+	}
+	public String getResvNum() {
+		return resvNum;
+	}
+	public void setResvNum(String resvNum) {
+		this.resvNum = resvNum;
+	}
+	public String getPtNum() {
+		return ptNum;
+	}
+	public void setPtNum(String ptNum) {
+		this.ptNum = ptNum;
+	}
+	public String getEmpNum() {
+		return empNum;
+	}
+	public void setEmpNum(String empNum) {
+		this.empNum = empNum;
+	}
+	public String getRegCc() {
+		return regCc;
+	}
+	public void setRegCc(String regCc) {
+		this.regCc = regCc;
+	}
+	public int getChairNum() {
+		return chairNum;
+	}
+	public void setChairNum(int chairNum) {
+		this.chairNum = chairNum;
+	}
+	public String getRegStatus() {
+		return regStatus;
+	}
+	public void setRegStatus(String regStatus) {
+		this.regStatus = regStatus;
+	}
+	public Date getRegDt() {
+		return regDt;
+	}
+	public void setRegDt(Date regDt) {
+		this.regDt = regDt;
+	}
+	public String getPtNm() {
+		return ptNm;
+	}
+	public void setPtNm(String ptNm) {
+		this.ptNm = ptNm;
+	}
+	public String getEmpNm() {
+		return empNm;
+	}
+	public void setEmpNm(String empNm) {
+		this.empNm = empNm;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "RegistVO [regNum=" + regNum + ", resvNum=" + resvNum + ", ptNum=" + ptNum + ", empNum=" + empNum
+				+ ", regCc=" + regCc + ", chairNum=" + chairNum + ", regStatus=" + regStatus + ", regDt=" + regDt
+				+ ", ptNm=" + ptNm + ", empNm=" + empNm + "]";
+	}
+}

@@ -1,0 +1,28 @@
+package com.web.ddentist.hospital.chart.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.web.ddentist.mapper.ChartMapper;
+import com.web.ddentist.vo.RegistVO;
+import com.web.ddentist.vo.ReservationVO;
+
+@Service
+public class ChartServiceImpl implements IChartService {
+	
+	@Autowired
+	private ChartMapper chartMapper;
+	
+	@Override
+	public List<RegistVO> listRegist() {
+		return chartMapper.listRegist();
+	}
+	
+	@Override
+	public List<ReservationVO> listResv() {
+		return chartMapper.listResv();
+	}
+
+}

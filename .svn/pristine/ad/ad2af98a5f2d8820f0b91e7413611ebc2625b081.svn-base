@@ -1,0 +1,23 @@
+package com.web.ddentist.mapper;
+
+import java.util.List;
+
+import com.web.ddentist.vo.RegistVO;
+import com.web.ddentist.vo.ReservationVO;
+
+public interface ChartMapper {
+	
+	/**
+	 * 오늘의 접수 목록을 조회
+	 * 
+	 * @return 오늘 등록된 접수 목록
+	 */
+	public List<RegistVO> listRegist();
+	
+	/**
+	 * 취소된 예약을 제외한 오늘의 예약 목록을 조회
+	 * 
+	 * @return 오늘의 예약 목록
+	 */
+	public List<ReservationVO> listResv();
+}

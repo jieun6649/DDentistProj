@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.web.ddentist.mapper.StatisticsMapper">
+
+	<select id="listHdofYn" resultType="commCdVO">
+		SELECT COMM_CD_NM, COMM_CD_CNT
+		  FROM COMMON_CODE
+		 WHERE COMM_GR_CD = 'HDOF_YN_CD'
+	</select>
+	
+	<select id="listJbgd" resultType="jbgdVO">
+		SELECT JBGD_CD, JBGD_NM
+		  FROM JBGD
+		 WHERE JBGD_CD IN (1, 2)
+	</select>
+	
+	<select id="listDept" resultType="deptVO">
+		SELECT DEPT_CD, DEPT_NM
+		  FROM DEPARTMENT
+	</select>
+	
+	<sql id="empSearchWhere">
+		<if test="hdofYn != null and hdofYn != ''">
+			AND HDOF_YN = #{hdofYn}
+		</if>
+		<if test="jbgdCd != null and jbgdCd != ''">
+			AND JBGD_CD = #{jbgdCd}
+		</if>
+		<if test="deptCd != null and deptCd != ''">
+			AND DEPT_CD = #{deptCd}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (
+				EMP_NUM LIKE '%' || #{keyword} || '%'
+				OR EMP_NM LIKE '%' || #{keyword} || '%'
+			)
+		</if>
+	</sql>
+	
+	<select id="totalRow" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM EMPLOYEE
+		 WHERE 1 = 1
+		<include refid="empSearchWhere" />
+	</select>
+	
+	<select id="listEmp" parameterType="Map" resultType="empVO">
+		WITH T AS (
+			SELECT ROW_NUMBER() OVER(ORDER BY EMP_NUM) ROW_NUM, E.EMP_NUM, E.EMP_NM, 
+				   (SELECT JBGD_NM
+				      FROM JBGD
+				     WHERE JBGD_CD = E.JBGD_CD) JBGD_CD,
+				   (SELECT DEPT_NM
+				      FROM DEPARTMENT
+				     WHERE DEPT_CD = E.DEPT_CD) DEPT_CD
+			  FROM EMPLOYEE E
+			 WHERE 1 = 1
+			<include refid="empSearchWhere" />
+		)
+		SELECT T.EMP_NUM, T.EMP_NM, T.JBGD_CD, T.DEPT_CD
+		  FROM T
+		 WHERE T.ROW_NUM BETWEEN (#{page} - 1) * 5 + 1 AND #{page} * 5
+		
+	</select>
+	
+	<select id="selectMonthlyPtCount" parameterType="String" resultType="String">
+	<![CDATA[
+		WITH MONTHS AS (
+		    SELECT TO_CHAR(SYSDATE, 'YYYY') || '01' + LEVEL - 1 MONTH
+		      FROM DUAL
+		     CONNECT BY LEVEL <= 12
+		)
+		SELECT COUNT(C.PT_NUM)
+		  FROM MONTHS M LEFT OUTER JOIN CHECKUP C ON (M.MONTH = TO_CHAR(C.CHK_DT, 'YYYYMM')
+		  											  AND C.EMP_NUM = #{empNum})
+		 GROUP BY M.MONTH
+		 ORDER BY M.MONTH
+	]]>
+	</select>
+	
+</mapper>

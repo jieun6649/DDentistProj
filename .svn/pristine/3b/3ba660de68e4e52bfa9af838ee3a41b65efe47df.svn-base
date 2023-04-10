@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.web.ddentist.mapper.PreservationMapper">
+	
+	<select id="selectPtNum" parameterType="ptVO" resultType="String">
+		SELECT PT_NUM
+		  FROM PATIENT
+		 WHERE PT_NM = #{ptNm}
+		   AND PT_RRNO = #{ptRrno}
+	</select>
+	
+	<select id="listPresv" parameterType="String" resultType="reservationVO">
+		SELECT RESV_NUM, PT_NUM, EMP_NUM, PT_NM, PT_PHONE,
+			   RESV_CC, RESV_EDT, RESV_ET, RESV_STATUS,
+			   TO_CHAR(RESV_SDT, 'YYYY.MM.DD HH24:MI') RESV_SDT
+		  FROM RESERVATION
+		 WHERE PT_NUM = #{ptNum}
+	</select>
+	
+	<select id="listNonPresv" parameterType="ptVO" resultType="reservationVO">
+		SELECT RESV_NUM, PT_NUM, EMP_NUM, PT_NM, PT_PHONE,
+			   RESV_CC, RESV_EDT, RESV_ET, RESV_STATUS,
+			   TO_CHAR(RESV_SDT, 'YYYY.MM.DD HH24:MI') RESV_SDT
+		  FROM RESERVATION
+		 WHERE PT_NM = #{ptNm}
+		   AND PT_PHONE = #{ptPhone}
+		   AND PT_NUM NOT LIKE 'T' || '%'
+	</select>
+	
+</mapper>

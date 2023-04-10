@@ -1,0 +1,194 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<style>
+.dropdown-item{
+	cursor: pointer;
+}
+#ptDetailCard::-webkit-scrollbar{
+	display: none;
+}
+#waitingList::-webkit-scrollbar{
+	width: 10px;
+	height: 10px;
+}
+#waitingList::-webkit-scrollbar-thumb{
+    background-color: #404b57;
+    border-radius: 5px;
+}
+#waitingList::-webkit-scrollbar-track{
+    background-color: rgba(0,0,0,0);
+}
+td[data-toggle="dropdown"]{
+	cursor: pointer;
+}
+/* 진료목록 헤더 */
+.tableHead {
+	position: sticky;
+	top: -0.1px;
+	background-color: whitesmoke;
+}
+</style>
+<div class="content-wrapper" style="background-color: #657D96;">
+	<!-- main 검색창을 포함한 navbar 시작-->
+	<nav class="navbar navbar-expand navbar-white navbar-light" style="background-color: #404b57;">
+
+		<div class="dropdown">
+			<input type="text" class="form-control" id="ptSearch" placeholder="환자 검색" onkeyup="searchPatient(this);" style="width: 400px;" />
+			<ul id="ptSearchDropdown" class="dropdown-menu">
+			</ul>
+		</div>
+		<img src="/resources/images/layout/memo_icon.png" alt="메모" id="memo" class="brand-image elevation-1" style="margin-left: 15px;">
+
+		<ul class="navbar-nav ml-auto">
+
+		</ul>
+	</nav>
+	<!-- main 검색창을 포함한 navbar 끝 -->
+	<section class="content" style="margin-top: 1%;">
+		<div class="row">
+         <div class="col-lg-7">
+            <!-------------------- 진료 기록 -------------------->
+            <div class="card card-info menuDiv">
+               <div class="card-header" style="background-color: #404b57;">
+                  <h3 class="card-title" style="color: white;">진료 기록</h3>
+               </div>
+
+               <div class="card-body table-responsive p-0"
+                  style="height: 850px; border-bottom: 20px; overflow-x: hidden;"
+                  id="tabCard">
+                  <div id="example2_wrapper"
+                     class="dataTables_wrapper dt-bootstrap4">
+                     <div class="row">
+                        <div class="col-sm-12">
+                           <table id="table table-hover text-nowrap"
+                              class="table table-bordered table-hover dataTable dtr-inline tablehover"
+                              aria-describedby="example2_info" style="table-layout: fixed;">
+                              <thead class="tableHead text-center">
+                                 <tr>
+                                    <th style="width: 11%;">진료번호</th>
+                                    <th style="width: 9%;">진료일</th>
+                                    <th style="width: 7%;">이름</th>
+                                    <th style="width: 10%;">차트번호</th>
+                                    <th style="width: 10%;">생년월일</th>
+                                    <th style="width: 11%;">담당의사</th>
+                                 </tr>
+                              </thead>
+                              <tbody id="txCodeList">
+                                 <c:forEach var="txCodeVO" items="${txCodeList}" varStatus="index">
+                                    <tr class="txCodeListTr">
+                                       <td>${txCodeVO.txcCd}</td>
+                                       <td>${txCodeVO.txcNm}</td>
+                                       <td>${txCodeVO.txcPrice}</td>
+                                    </tr>
+                                 </c:forEach>
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-------------------- 진료 기록 -------------------->
+         </div>
+         <div class="col-lg-5">
+	        <!-------------------- 영상 시작  -------------------->
+            <div class="card card-info" style='width:auto; height:24%;'>
+               <div class="card-header" style="background-color: #404b57;">
+                  <h3 class="card-title" style="color: white;">환자 정보</h3>
+               </div>
+
+               <div class="card-body table-responsive p-0"
+                  style="height: 850px; border-bottom: 20px; overflow-x: hidden;"
+                  id="tabCard">
+                  <div id="example2_wrapper"
+                     class="dataTables_wrapper dt-bootstrap4">
+                     <div class="row">
+                        <div class="col-sm-12">
+                           <!-- 테스트 -->
+                           <!-- 테스트 -->
+                        </div>
+
+                     </div>
+                  </div>
+               </div>
+            </div>
+	        
+	        <!-------------------- 영상 완료 -------------------->
+	        <!-------------------- 썸네일 시작  -------------------->
+	            <div class="card card-info" style='width:auto; height:24%;'>
+	               <div class="card-header" style="background-color: #404b57;">
+	                  <h3 class="card-title" style="color: white;">썸네일 정보</h3>
+	               </div>
+	
+	               <div class="card-body table-responsive p-0"
+	                  style="height: 850px; border-bottom: 20px; overflow-x: hidden;"
+	                  id="tabCard">
+	                  <div id="example2_wrapper"
+	                     class="dataTables_wrapper dt-bootstrap4">
+	                     <div class="row">
+	                        <div class="col-sm-12">
+	                           <!-- 테스트 -->
+	                           <!-- 테스트 -->
+	                        </div>
+	
+	                     </div>
+	                  </div>
+	               </div>
+	            </div>
+	        <!-------------------- 썸네일 완료 -------------------->
+         </div>
+      </div>
+	</section>
+</div>
+
+<script>
+// 검색 창 이름 클릭 시
+function selectPt(pt){
+	console.log('클릭함 : ' + pt.innerText);
+	var ptInfo = pt.innerText.split('(');
+	var ptNum = ptInfo[0]
+	var ptNm = ptInfo[1].substr(0,9);
+	
+	var data = {
+		'ptNum':ptNum,
+		'ptNm':ptNm,
+	}
+	
+	$.ajax({
+		url:'/hospital/media/ptInfo',
+		type:'post',
+		data:data,
+		dataType:'json',
+		beforeSend: function(xhr) {
+           xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
+           xhr.setRequestHeader('${_csrf.headerName}', '${_csrf.token}');
+        },
+		success: function(res){
+			
+		}
+	});
+}
+
+// 환자 상세정보의 탭을 클릭하여 탭 내용을 바꾼다.
+$('#ptDetailTabList a').on('click', function(){
+	$(this).tab('show');
+});
+
+// 환자 검색란에 값 입력 시 드롭박스 메뉴가 열린다.
+$('#famPtSearch').on('keyup', function(e){
+	$(this).dropdown('toggle');
+});
+
+// 환자 검색란을 떠나면 드롭박스 메뉴가 닫힌다.
+$('#famPtSearch').on('blur', function(e){
+	if($('#famPtSearchDropdown').hasClass('show')){
+		$('#famPtSearchDropdown').removeClass('show');
+	}
+});
+
+</script>
+<script src="/resources/js/searchModule.js"></script>
+<script src="/resources/js/alertModule.js"></script>
+<!-- <script src="/resources/js/deskPatient.js"></script> -->
+<!-- <script src="/resources/js/deskRegist.js"></script> -->

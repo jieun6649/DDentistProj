@@ -1,0 +1,376 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<style>
+.dropdown-item{
+	cursor: pointer;
+}
+#ptDetailCard::-webkit-scrollbar{
+	display: none;
+}
+#waitingList::-webkit-scrollbar{
+	width: 10px;
+	height: 10px;
+}
+#waitingList::-webkit-scrollbar-thumb{
+    background-color: #404b57;
+    border-radius: 5px;
+}
+#waitingList::-webkit-scrollbar-track{
+    background-color: rgba(0,0,0,0);
+}
+td[data-toggle="dropdown"]{
+	cursor: pointer;
+}
+/* 진료목록 헤더 */
+.tableHead {
+	position: sticky;
+	top: -0.1px;
+	background-color: whitesmoke;
+}
+</style>
+<div class="content-wrapper" style="background-color: #657D96;">
+	<!-- main 검색창을 포함한 navbar 시작-->
+	<nav class="navbar navbar-expand navbar-white navbar-light" style="background-color: #404b57;">
+
+		<div class="dropdown">
+			<input type="text" class="form-control" id="ptSearch" placeholder="환자 검색" onkeyup="searchPatient(this);" style="width: 400px;" />
+			<ul id="ptSearchDropdown" class="dropdown-menu">
+			</ul>
+		</div>
+		<img src="/resources/images/layout/memo_icon.png" alt="메모" id="memo" class="brand-image elevation-1" style="margin-left: 15px;">
+
+		<ul class="navbar-nav ml-auto">
+
+		</ul>
+	</nav>
+	<!-- main 검색창을 포함한 navbar 끝 -->
+	<section class="content" style="margin-top: 1%;">
+		<div class="row">
+         <div class="col-lg-7">
+            <!-------------------- 진료 기록 -------------------->
+            <div class="card">
+               <div class="card-header" style="background-color: #404b57;">
+                  <h3 class="card-title" style="color: white;">진료 기록</h3>
+               </div>
+
+               <div class="card-body table-responsive p-0"
+                  style="height: 850px; border-bottom: 20px; overflow-x: hidden;"
+                  id="tabCard">
+                  <div id="example2_wrapper"
+                     class="dataTables_wrapper dt-bootstrap4">
+                     <div class="row">
+                        <div class="col-sm-12">
+                           <table id="table table-hover text-nowrap"
+                              class="table table-bordered table-hover dataTable dtr-inline tablehover"
+                              aria-describedby="example2_info" style="table-layout: fixed;">
+                              <thead class="tableHead text-center">
+                                 <tr>
+                                    <th style="width: 11%;">진료번호</th>
+                                    <th style="width: 9%;">진료일</th>
+                                    <th style="width: 7%;">이름</th>
+                                    <th style="width: 10%;">차트번호</th>
+                                    <th style="width: 10%;">생년월일</th>
+                                    <th style="width: 11%;">담당의사</th>
+                                 </tr>
+                              </thead>
+                              <tbody id="txCodeList">
+                                 <c:forEach var="txCodeVO" items="${txCodeList}" varStatus="index">
+                                    <tr class="txCodeListTr">
+                                       <td>${txCodeVO.txcCd}</td>
+                                       <td>${txCodeVO.txcNm}</td>
+                                       <td>${txCodeVO.txcPrice}</td>
+                                    </tr>
+                                 </c:forEach>
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-------------------- 진료 기록 -------------------->
+         </div>
+         <div class="col-lg-5">
+         	<div class="row">
+	            <!-------------------- 영상 시작  -------------------->
+	            <div class="card">
+	               <div class="card-header" style="background-color: #404b57;">
+	                  <h3 class="card-title" style="color: white;">상세 정보</h3>
+	               </div>
+	
+	               <div class="card-body table-responsive p-0"
+	                  style="height: 850px; border-bottom: 20px; overflow-x: hidden;"
+	                  id="tabCard">
+	                  <div id="example2_wrapper"
+	                     class="dataTables_wrapper dt-bootstrap4">
+	                     <div class="row">
+	                        <div class="col-sm-12">
+	                           <!-- 테스트 -->
+	                           <!-- 테스트 -->
+	                        </div>
+	
+	                     </div>
+	                  </div>
+	               </div>
+	            </div>
+	            <!-------------------- 영상 완료 -------------------->
+         </div>
+      </div>
+	</section>
+</div>
+
+<!-- 가족관계 추가 모달 -->
+<div class="modal fade" id="familyModal" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="familyModalLabel">가족관계 추가</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="familyPatientForm" action="/hospital/desk/insertFamily">
+					<div class="row">
+						<div class="col-sm-6 px-4">
+							<div class="form-group mb-3 dropdown">
+								<label class="form-label">환자 검색</label>
+								<input type="text" id="famPtSearch" class="form-control" onkeyup="searchFamPatient(this);" />
+								<ul id="famPtSearchDropdown" class="dropdown-menu">
+								</ul>
+							</div>
+							<div class="form-group row m-0">
+								<label class="form-label col-sm-4 d-flex justify-content-center align-items-center m-0">차트번호</label>
+								<input type="text" name="famPtNum" class="form-control-plaintext col-sm-8" readonly />
+							</div>
+							<div class="form-group row m-0">
+								<label class="form-label col-sm-4 d-flex justify-content-center align-items-center m-0">환자 명</label>
+								<input type="text" name="famPtNm" class="form-control-plaintext col-sm-8" readonly />
+							</div>
+							<div class="form-group row m-0">
+								<label class="form-label col-sm-4 d-flex justify-content-center align-items-center m-0">생년월일</label>
+								<input type="text" name="famPtBrdt" class="form-control-plaintext col-sm-8" readonly />
+							</div>
+						</div>
+						<div class="col-sm-6 px-4">
+							<label class="form-label">관계 선택</label>
+							<select class="custom-select" name="famRel">
+								<c:forEach var="fam" items="${requestScope.familyCodeList}">
+									<option value="${fam.commCdNm}">${fam.commCdCnt}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="insertFamily();">저장</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetFamilyModal();">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="queModal" data-backdrop="static" data-keyboard="false" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="queModalLabel">문진표</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form name="questionnaireForm">
+					<input type="hidden" name="ptNum" />
+					<div class="row g-2">
+						<div class="form-group col-sm-6">
+							<label class="form-label">내원 이유</label>
+							<input type="text" class="form-control" name="queReason" />
+						</div>
+						<div class="form-group col-sm-6">
+							<label class="form-label">희망 치료 내용</label>
+							<input type="text" class="form-control" name="queWant" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="form-label">복용 약</label>
+						<input type="text" class="form-control" name="quePharm" />
+					</div>
+					<div>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label class="form-label">1.항혈전제 복용</label>
+								<input type="checkbox" name="uConList[0].conNm" value="항혈전제 복용" />
+								<input type="text" class="uConditionType" name="uConList[0].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">2.위장장애</label>
+								<input type="checkbox" name="uConList[1].conNm" value="위장장애" />
+								<input type="text" class="uConditionType" name="uConList[1].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">3.고혈압</label>
+								<input type="checkbox" name="uConList[2].conNm" value="고혈압" />
+								<input type="text" class="uConditionType" name="uConList[2].conDet" disabled />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label class="form-label">4.당뇨병</label>
+								<input type="checkbox" name="uConList[3].conNm" value="당뇨병" />
+								<input type="text" class="uConditionType" name="uConList[3].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">5.간염</label>
+								<input type="checkbox" name="uConList[4].conNm" value="간염" />
+								<input type="text" class="uConditionType" name="uConList[4].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">6.결핵</label>
+								<input type="checkbox" name="uConList[5].conNm" value="결핵" />
+								<input type="text" class="uConditionType" name="uConList[5].conDet" disabled />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label class="form-label">7.페니실린 알러지</label>
+								<input type="checkbox" name="uConList[6].conNm" value="페니실린 알러지" />
+								<input type="text" class="uConditionType" name="uConList[6].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">8.감염성</label>
+								<input type="checkbox" name="uConList[7].conNm" value="감염성" />
+								<input type="text" class="uConditionType" name="uConList[7].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">9.내심막염</label>
+								<input type="checkbox" name="uConList[8].conNm" value="내심막염" />
+								<input type="text" class="uConditionType" name="uConList[8].conDet" disabled />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label class="form-label">10.뇌혈관질환</label>
+								<input type="checkbox" name="uConList[9].conNm" value="뇌혈관질환" />
+								<input type="text" class="uConditionType" name="uConList[9].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">11.심장질환</label>
+								<input type="checkbox" name="uConList[10].conNm" value="심장질환" />
+								<input type="text" class="uConditionType" name="uConList[10].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">12.만성 신부전(혈액투석)</label>
+								<input type="checkbox" name="uConList[11].conNm" value="만성 신부전(혈액투석)" />
+								<input type="text" class="uConditionType" name="uConList[11].conDet" disabled />
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-sm-4">
+								<label class="form-label">13.만성간경화</label>
+								<input type="checkbox" name="uConList[12].conNm" value="만성간경화" />
+								<input type="text" class="uConditionType" name="uConList[12].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">14.천식</label>
+								<input type="checkbox" name="uConList[13].conNm" value="천식" />
+								<input type="text" class="uConditionType" name="uConList[13].conDet" disabled />
+							</div>
+							<div class="form-group col-sm-4">
+								<label class="form-label">15.기타</label>
+								<input type="checkbox" name="uConList[14].conNm" value="기타" />
+								<input type="text" class="uConditionType" name="uConList[14].conDet" disabled />
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" onclick="insertQue();">저장</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="https://ssl.daumcdn.net/dmaps/map_js_init/postcode.v2.js"></script>
+<script>
+
+// 다음 주소찾기 API
+function openHomeSearch() {
+    new daum.Postcode({
+        // 선택 완료 시 데이터를 폼에 담아준다.
+        oncomplete : function(data) {
+            document.patientForm.ptZip.value = data.zonecode; // 우편번호
+            document.patientForm.ptAddr.value = data.address; // 주소
+            document.patientForm.ptAddrDet.value = data.buildingName; // 건물주소
+        }
+    }).open();
+}
+
+// 가족관계 모달 열기
+function openfamilyModal(){
+	const ptNum = document.patientForm.ptNum.value;
+	if(ptNum == ''){
+		simplePatientSelectNeedAlert();
+		return false;
+	}
+	
+	$('#familyModal').modal('show');
+}
+
+// 환자의 가족, 진료, 수납 정보를 가져온다.
+function selectDetail(){
+	
+	const ptNum = document.patientForm.ptNum.value;
+	if(ptNum == '') return false;
+	
+	fetch('/hospital/desk/selectDetail?ptNum=' + ptNum)
+		.then(res => res.json())
+		.then(ptDet => {
+			
+			// 가족관계 목록 셋팅
+			setFamilyList(ptDet.familyList);
+			
+			// 진료내역 목록 셋팅
+			let chkList = '';
+			ptDet.checkupList.forEach(function(chk){
+				console.log('진료목록 조회');
+				console.log(chk);
+			});
+			document.querySelector('#checkupListBody').insertAdjacentHTML('beforeEnd', chkList);
+			
+			// 수납내역 목록 셋팅
+			let rcvmt = '';
+			ptDet.rcvmtList.forEach(function(rcvmt){
+				console.log('수납목록 조회');
+				console.log(rcvmt);
+			});
+			document.querySelector('#rcvmtListBody').insertAdjacentHTML('beforeEnd', rcvmt);
+		});
+	
+}
+
+// 환자 상세정보의 탭을 클릭하여 탭 내용을 바꾼다.
+$('#ptDetailTabList a').on('click', function(){
+	$(this).tab('show');
+});
+
+// 환자 검색란에 값 입력 시 드롭박스 메뉴가 열린다.
+$('#famPtSearch').on('keyup', function(e){
+	$(this).dropdown('toggle');
+});
+
+// 환자 검색란을 떠나면 드롭박스 메뉴가 닫힌다.
+$('#famPtSearch').on('blur', function(e){
+	if($('#famPtSearchDropdown').hasClass('show')){
+		$('#famPtSearchDropdown').removeClass('show');
+	}
+});
+
+</script>
+<script src="/resources/js/searchModule.js"></script>
+<script src="/resources/js/deskPatient.js"></script>
+<script src="/resources/js/deskRegist.js"></script>
+<script src="/resources/js/alertModule.js"></script>
