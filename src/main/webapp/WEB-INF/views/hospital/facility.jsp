@@ -396,15 +396,12 @@ $(document).ready(function(){
 			//children(해당 요소의 아래에 있는 자식들 중 <tr>요소를 찾고 찾은 <tr>요소의 자식 중 .updateInput 클래스이름을 가진 요소의 style을 변경)
 			//child(해당 요소의 바로 아래에 있는 자식을 찾아 <tr>요소를 찾고 찾은 <tr>요소의 자식 중 .updateInput 클래스이름을 가진 요소의 style을 변경)
 
-// 			$(this).parent().find(".updateInput").attr("readonly", false); //체어명
 			$(this).parent().next().next().find(".updateInput").prop("readonly", false); //체어명
 			$(this).parent().next().next().find(".updateInput").css("border", "1px solid blue"); //체어명 작성란 테두리
 			$(this).parent().parent().find("#chairSn").prop("disabled", false); //부서 선택란 작성가능 처리
 
 
-// 			const newText = document.createElement('input');
-// 			newText.innerHTML = "<input type='text'>";
-// 			$(".update1").appendCild(newText);
+
 		}else{
 			//alert("체크해제");
 // 			$("#chairSn").prop("disabled", true);
